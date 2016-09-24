@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>br.com.beatbot</groupId>
+  <artifactId>teste-bot1</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>BeatBot</name>
+  <packaging>jar</packaging>
+  
+  <properties>
+    <project.build.sourceencoding>UTF-8</project.build.sourceencoding>
+  </properties>
+  
+  <repositories>
+    <repository>  <!-- This repo fixes issues with transitive dependencies -->
+      <id>jcenter</id>
+      <url>http://jcenter.bintray.com</url>
+    </repository>
+    <repository>
+      <id>jitpack</id>
+      <name>jitpack-center</name>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>2.2.1_353</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.DV8FromTheWorld</groupId>
+      <artifactId>JDA-Player</artifactId>
+      <version>-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.11</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>br.com.beatbot.BaseBot</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
