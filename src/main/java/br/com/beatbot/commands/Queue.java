@@ -56,9 +56,8 @@ public class Queue extends Command{
 					+ "** [" + currentTime
 					+ "/" + audioSourceTime +"]";
 			
-			reply += "\nLista de espera:";
-			
 			if(musicPlayer.getAudioQueue().size() > 0) {
+				reply += "\nLista de espera:";
 				int index = 0;
 				for(AudioSource audioSource : musicPlayer.getAudioQueue()) {
 					reply += "\n[" + String.valueOf(index) + "] - " + audioSource.getInfo().getTitle();
