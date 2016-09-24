@@ -16,12 +16,11 @@ BeatBot é um bot de música para [Discord](discordapp.com). Ele pode tocar mús
 - `!skip` - Pula para a próxima música na playlist
 - `!queue` - Mostra a playlist atual
 
-### Used third party libraries
-| Name | Version |
+### Third party libraries usadas
+| Nome | Versão |
 |------|---------|
-| [JDA](https://github.com/DV8FromTheWorld/JDA)  | 1.2.2_139 |
-| [JDAPlayer](https://github.com/ronmamo/reflections) | 0.9.9 |
-| [VLCJ](https://github.com/caprica/vlcj) | 3.8.0 |
+| [JDA](https://github.com/DV8FromTheWorld/JDA)  | 2.2.1_353 |
+| [JDAPlayer](https://github.com/DV8FromTheWorld/JDA-Player) | SNAPSHOT |
 
 ### Licença
 Este projeto é licenciado sobre o GNU General Public License v3.0. Veja o arquivo LICENSE para mais detalhes.
