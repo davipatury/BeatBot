@@ -1,10 +1,6 @@
 language: java
 jdk: oraclejdk8
 
-# Setup environment
-before_install:
-- chmod +x gradlew
-
 # Default gradle task will be run automatically on build, no need to define it
 
 # Deployment to GitHub-releases
