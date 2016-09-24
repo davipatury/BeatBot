@@ -1,5 +1,5 @@
 # BeatBot [![Build Status](https://travis-ci.org/davipatury/BeatBot.svg?branch=master)](https://travis-ci.org/davipatury/BeatBot)
-BeatBot é um bot de música para [Discord](discordapp.com). Ele pode tocar músicas locais ou de sites como Youtube e Soundcloud.
+BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode tocar músicas locais ou de sites como Youtube e Soundcloud.
 
 ### Requerimentos
 - Java 8
