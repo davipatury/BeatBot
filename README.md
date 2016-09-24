@@ -1,2 +1,2 @@
 # BeatBot
-A JDA music bot made.
+Um DiscordBot feito através da library JDA e JDAPlayer.
