@@ -6,7 +6,6 @@ jdk: oraclejdk8
 # Deployment to GitHub-releases
 before_deploy:
   # Generate a packaged jar and rename it to include the tag
-- ./gradlew assemble
 - mv build/libs/beatbot-1.0-SNAPSHOT.jar build/libs/beatbot-$TRAVIS_TAG.jar
 
 deploy:
