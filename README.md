@@ -15,7 +15,7 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 - `prefix: !` - Substitua(ou não) `!` pelo prefixo dos comandos que você deseja.
 - `voiceChannelID: 123` - Substitua `123` pelo ID do chat de voz que você deseja que o bot reproduza as músicas.
 - `musicTextChannelID: 123` - Substitua `123` pelo ID do chat de texto que você deseja que o bot envie as mensagens.
-- `autoSummon: true` - Coloque `true` para que antes do bot reproduzir uma música, ele automaticamente entre no chat de voz. Ou coloque `false` para que não seja reproduzir músicas até que o bot esteja em um chat de voz.
+- `autoSummon: true` - Coloque `true` para que antes do bot reproduzir uma música, ele automaticamente entre no chat de voz. Ou coloque `false` para que não seja possível reproduzir músicas até que o bot esteja em um chat de voz.
 
 ### Uso
 - `!help` - Mostra todos os comandos, você pode usar !help [nome do comando] para mais informações.
