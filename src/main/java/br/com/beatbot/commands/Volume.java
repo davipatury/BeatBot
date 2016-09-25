@@ -7,7 +7,7 @@ import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
 
-public class Skip extends Command{
+public class Volume extends Command{
 
 	public void doCommand(BaseBot bot, Message message, String[] params) {
 		String reply = null;
@@ -23,31 +23,34 @@ public class Skip extends Command{
 		MusicPlayer musicPlayer;
 		if (am.getSendingHandler() != null) {
 			musicPlayer = (MusicPlayer) am.getSendingHandler();
-			if(!musicPlayer.isPlaying()) {
-				reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
-			}
+			float volume = Float.parseFloat(params[0]);
+			volume = Float.min(volume, 100);
+			volume = Float.max(volume, 0);
 			
-			musicPlayer.skipToNext();
+			try {
+				musicPlayer.setVolume(volume/100);
+				reply = message.getAuthor().getAsMention() + ", volume definido para: " + volume;
+			} catch (NumberFormatException e) {
+				reply = message.getAuthor().getAsMention() + ", não foi possível definir o volume, defina um número correto.";
+			}
 		} else {
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
 		}
 		
-		if (reply != null) {
-			channel.sendMessage(reply);
-		}
+		channel.sendMessage(reply);
 		return;
 	}
 	
 	public String getName() {
-		return "Skip";
+		return "Volume";
 	}
 	
 	public String getDescription() {
-		return "Use este comando para pular a música atual(caso exista).";
+		return "Use esse comando para definir o volume das músicas.";
 	}
 	
 	public String getParams() {
-		return "";
+		return "<volume>";
 	}
 	
 	public String[] getAuths() {
@@ -55,7 +58,7 @@ public class Skip extends Command{
 	}
 	
 	public boolean verifyParameters(String[] params) {
-		return true;
+		return (params.length == 1);
 	}
 	
 }

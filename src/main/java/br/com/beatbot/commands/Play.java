@@ -1,11 +1,21 @@
 package br.com.beatbot.commands;
 
+import java.io.IOException;
+
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchListResponse;
+
 import br.com.beatbot.BaseBot;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.exceptions.PermissionException;
 import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
 import net.dv8tion.jda.player.source.AudioInfo;
@@ -28,6 +38,47 @@ public class Play extends Command{
 		AudioManager am = guild.getAudioManager();
 		
 		channel.sendTyping();
+		
+		try {
+			message.deleteMessage();
+		} catch(PermissionException e) {
+			BaseBot.print("Nao foi possível apagar uma mensagem!", "PermissionException");
+		}
+		
+		if (bot.getConfigStringValue("youtubeAPIkey") != null) {
+			if (params.length >= 1 && (!params[0].startsWith("youtube.com") || !params[0].startsWith("http://") || !params[0].startsWith("www."))) {
+				String completeName = "";
+				if (params.length > 1) {
+					for(String s : params) {
+						completeName += s + " ";
+					}
+				} else {
+					completeName = params[0];
+				}
+				
+				YouTube youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
+			          public void initialize(HttpRequest request) throws IOException {}})
+			        .setApplicationName("youtube-cmdline-search-sample")
+			        .build();
+
+			    try {
+			    	YouTube.Search.List search = youtube.search().list("id,snippet");
+					
+			    	search.setKey(bot.getConfigStringValue("youtubeAPIkey"));
+					search.setQ(completeName);
+					search.setType("video");
+					search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+					
+					SearchListResponse searchResponse = search.execute();
+					
+					BaseBot.print(searchResponse.getItems().get(0).getId().getVideoId(), "Debug");
+					
+					params[0] = searchResponse.getItems().get(0).getId().getVideoId();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		if (!am.isConnected()) {
 			if (bot.getConfigBooleanValue("autoSummon")) {
@@ -96,9 +147,8 @@ public class Play extends Command{
 				}
 			}
 		}
-		
-		message.updateMessage(reply);
-		//channel.sendMessage(reply);
+
+		channel.sendMessage(reply);
 		return;
 	}
 	
@@ -119,7 +169,7 @@ public class Play extends Command{
 	}
 	
 	public boolean verifyParameters(String[] params) {
-		return (params.length == 1);
+		return true;
 	}
 	
 }

@@ -39,6 +39,7 @@ public class BaseBot extends ListenerAdapter{
 		commands.put("play", new Play());
 		commands.put("queue", new Queue());
 		commands.put("skip", new Skip());
+		commands.put("volume", new Volume());
 		for(String name : commands.keySet()) {
 			print("Comando adicionado: " + name, "Setup");
 		}

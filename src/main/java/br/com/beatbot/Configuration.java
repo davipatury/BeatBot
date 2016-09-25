@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -18,7 +21,22 @@ public class Configuration {
 			InputStream input = new FileInputStream(new File(filepath));
 			this.data = (Map<?, ?>) yaml.load(input);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("token", "tokenHere");
+			map.put("prefix", "!");
+			map.put("voiceChannelID", "123");
+			map.put("musicTextChannelID", "123");
+			map.put("autoSummon", "true");
+			map.put("youtubeAPIkey", "123");
+			
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter("config.yml", "UTF-8");
+				Yaml yaml = new Yaml();
+				yaml.dump(map, writer);
+			} catch (FileNotFoundException | UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	

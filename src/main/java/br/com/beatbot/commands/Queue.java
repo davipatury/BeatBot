@@ -21,11 +21,17 @@ public class Queue extends Command{
 		Guild guild = channel.getGuild();
 		AudioManager am = guild.getAudioManager();
 		
-		channel.sendTyping();
-		
 		MusicPlayer musicPlayer;
 		if (am.getSendingHandler() != null) {
 			musicPlayer = (MusicPlayer) am.getSendingHandler();
+			
+			if (musicPlayer.getCurrentAudioSource() == null) {
+				reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
+				channel.sendMessage(reply);
+				return;
+			}
+			
+			channel.sendTyping();
 			
 			String currentTime;
 			String audioSourceTime;
