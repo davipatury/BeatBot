@@ -5,11 +5,13 @@ import java.util.TreeSet;
 
 import br.com.beatbot.BaseBot;
 import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
 
 public class Help extends Command{
 
 	public void doCommand(BaseBot bot, Message message, String[] params) {
 		String reply = null;
+		TextChannel channel = (TextChannel) message.getChannel();
 		if (params != null && params.length > 0) {
 			if(bot.getCommands().containsKey(params[0].toLowerCase())) {
 				Command command = bot.getCommands().get(params[0].toLowerCase());
@@ -73,9 +75,10 @@ public class Help extends Command{
 			
 			reply += "---------------------\n";
 			reply += String.format("Perceba que alguns desses comandos necessitam de certa autorização. Para mais informações sobre um comando, escreva `%sHelp <nome do comando>`!", bot.getConfigStringValue("prefix"));
+			reply += "\n\nSaiba mais sobre os comandos em: https://github.com/davipatury/BeatBot/wiki/Commands";
 		}
 
-		message.getChannel().sendMessage(reply);
+		bot.deletableMessage(reply, channel, 30);
 		return;
 	}
 	
@@ -88,7 +91,7 @@ public class Help extends Command{
 	}
 	
 	public String getParams() {
-		return "<[opcional] nome do comando>";
+		return "[nome do comando]";
 	}
 	
 	public String[] getAliases() {

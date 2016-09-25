@@ -18,6 +18,7 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.managers.AudioManager;
@@ -28,9 +29,10 @@ public class BaseBot extends ListenerAdapter{
 	
 	public static Configuration config;
 	public static JDA jda;
-	private static final float DEFAULT_VOLUME = 0.25f;
+	public static float volumeAtual = 0.25f;
 	
 	public static Map<String, Command> commands = new HashMap<String, Command>();
+	public static Map<AudioSource, User> authors = new HashMap<AudioSource, User>();
 	
 	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, FileNotFoundException, UnsupportedEncodingException
 	{
@@ -77,9 +79,27 @@ public class BaseBot extends ListenerAdapter{
 		commands.put("skip", new Skip());
 		commands.put("volume", new Volume());
 		commands.put("stop", new Stop());
+		commands.put("info", new Info());
 		for(String name : commands.keySet()) {
 			print("Comando adicionado: " + name, "Setup");
 		}
+	}
+	
+	// Static...
+	public float getVolume() {
+		return volumeAtual;
+	}
+	
+	public void setVolume(float volume) {
+		volumeAtual = volume;
+	}
+	
+	public Map<AudioSource, User> getAuthors() {
+		return authors;
+	}
+	
+	public void addAuthors(AudioSource as, User author) {
+		authors.put(as, author);
 	}
 	
 	public Map<String, Command> getCommands() {
@@ -101,6 +121,7 @@ public class BaseBot extends ListenerAdapter{
 	public JDA getJDA() {
 		return jda;
 	}
+	//
 	
 	public static void print(String message, String tag) {
 		if (tag == "Debug" && config.getString("debug") == null) {
@@ -110,6 +131,16 @@ public class BaseBot extends ListenerAdapter{
 		Date now = new Date();
 	    String strDate = sdfDate.format(now);
 	    System.out.println("[" + strDate + "] [" + tag + "] [BeatBot]: " + message);
+	}
+	
+	public static String formatMusicTime(int time) {
+		String string;
+		if(time < 10) {
+			string = "0" + time;
+		} else {
+			string = String.valueOf(time);
+		}
+		return string;
 	}
 	
 	public static boolean checkLink(String string) {
@@ -137,17 +168,22 @@ public class BaseBot extends ListenerAdapter{
 			public void stop() {
 				super.stop();
 				am.closeAudioConnection();
-				jda.getAccountManager().setGame("");
+				jda.getAccountManager().setGame("Paciência Spider");
+				authors.clear();
 			}
 
 			@Override
 			public void playNext(boolean b) {
 				super.playNext(b);
-				super.setVolume(DEFAULT_VOLUME);
+				super.setVolume(volumeAtual);
+				
+				authors.remove(super.getPreviousAudioSource());
 
 				AudioSource src = super.getCurrentAudioSource();
 				if (src == null) {
 					am.closeAudioConnection();
+					jda.getAccountManager().setGame("Paciência Spider");
+					authors.clear();
 				} else {
 					sendMusicMessage("Tocando agora: **" + src.getInfo().getTitle() + "**");
 					jda.getAccountManager().setGame(src.getInfo().getTitle());
@@ -157,11 +193,11 @@ public class BaseBot extends ListenerAdapter{
 			@Override
             public void play() {
 				super.play();
-				super.setVolume(DEFAULT_VOLUME);
+				super.setVolume(volumeAtual);
 				jda.getAccountManager().setGame(super.getCurrentAudioSource().getInfo().getTitle());
 			}
 		};
-		myPlayer.setVolume(DEFAULT_VOLUME);
+		myPlayer.setVolume(volumeAtual);
 		return myPlayer;
     }
 	
@@ -181,6 +217,18 @@ public class BaseBot extends ListenerAdapter{
 	public void deletableMessage(String message, TextChannel channel) {
 		Message ms = channel.sendMessage(message);
 		Timer timer = new Timer(15000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ms.deleteMessage();
+			}
+		});
+		timer.setRepeats(false);
+		timer.start();
+	}
+	
+	public void deletableMessage(String message, TextChannel channel, int time) {
+		Message ms = channel.sendMessage(message);
+		Timer timer = new Timer(time * 1000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ms.deleteMessage();

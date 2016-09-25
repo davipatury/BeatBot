@@ -60,7 +60,7 @@ public class Skip extends Command{
 	}
 	
 	public String getParams() {
-		return "";
+		return "[número da música na fila]";
 	}
 	
 	public String[] getAliases() {

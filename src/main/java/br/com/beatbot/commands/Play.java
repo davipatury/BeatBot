@@ -138,6 +138,7 @@ public class Play extends Command{
 				}
 				
 				musicPlayer.getAudioQueue().add(audioSource);
+				bot.addAuthors(audioSource, author);
 
 				if (!musicPlayer.isPlaying()) {
 					musicPlayer.play();

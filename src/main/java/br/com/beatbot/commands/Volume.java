@@ -31,6 +31,7 @@ public class Volume extends Command{
 				try {
 					reply = message.getAuthor().getAsMention() + ", volume definido de " + Math.round(musicPlayer.getVolume() * 100) + " para " + Math.round(volume);
 					musicPlayer.setVolume(volume/100);
+					bot.setVolume(volume/100);
 				} catch (NumberFormatException e) {
 					reply = message.getAuthor().getAsMention() + ", não foi possível definir o volume, defina um número correto.";
 				}
@@ -54,7 +55,7 @@ public class Volume extends Command{
 	}
 	
 	public String getParams() {
-		return "[<volume>]";
+		return "[volume]";
 	}
 	
 	public String[] getAliases() {
