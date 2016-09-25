@@ -8,8 +8,9 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 ### Instalação
 - [Baixe](https://github.com/davipatury/BeatBot/releases) o jar e seus complementos
 - Transfira para o seu server ou use ele no seu computador
-- Configure o bot através do config.yml
-- Use este comando para rodá-lo `java -jar BeatBot.jar`
+- Use este comando para rodá-lo `java -jar BeatBot.jar` e espere o bot gerar o arquivo `config.yml`
+- Desligue o bot e configure-o através do arquivo `config.yml`
+- Depois de configurá-lo, use este comando para rodá-lo `java -jar BeatBot.jar`
 
 ### Configuração
 - `youtubeAPIkey: 123` - API Key da API do Youtube, deixe em branco caso não queira usar o sistema de busca. (!play (título do vídeo))
