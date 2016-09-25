@@ -21,6 +21,10 @@ public class Command {
 		return "";
 	}
 	
+	public String[] getAliases() {
+		return null;
+	}
+	
 	public String[] getAuths() {
 		return null;
 	}

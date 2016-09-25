@@ -13,7 +13,7 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 - Depois de configurá-lo, use este comando para rodá-lo `java -jar BeatBot.jar`
 
 ### Configuração
-- `youtubeAPIkey: 123` - API Key da API do Youtube, deixe em branco caso não queira usar o sistema de busca. (!play (título do vídeo))
+- `youtubeAPIkey: 123` - API Key da API do Youtube, deixe em branco caso não queira usar o sistema de busca. (!play <título do vídeo>)
 - `token: tokenHere` - Substitua `tokenHere` pelo token do seu bot, saiba mais sobre tokens [aqui](https://discordapp.com/developers/docs/topics/oauth2).
 - `prefix: !` - Substitua(ou não) `!` pelo prefixo dos comandos que você deseja.
 - `voiceChannelID: 123` - Substitua `123` pelo ID do chat de voz que você deseja que o bot reproduza as músicas.

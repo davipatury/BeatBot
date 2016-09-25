@@ -27,7 +27,7 @@ public class Queue extends Command{
 			
 			if (musicPlayer.getCurrentAudioSource() == null) {
 				reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
-				channel.sendMessage(reply);
+				bot.deletableMessage(reply, channel);
 				return;
 			}
 			
@@ -74,7 +74,7 @@ public class Queue extends Command{
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
 		}
 		
-		channel.sendMessage(reply);
+		bot.deletableMessage(reply, channel);
 		return;
 	}
 	
@@ -88,6 +88,10 @@ public class Queue extends Command{
 	
 	public String getParams() {
 		return "";
+	}
+
+	public String[] getAliases() {
+		return new String[]{"lista", "playlist"};
 	}
 	
 	public String[] getAuths() {

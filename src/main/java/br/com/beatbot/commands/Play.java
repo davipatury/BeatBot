@@ -39,13 +39,7 @@ public class Play extends Command{
 		
 		channel.sendTyping();
 		
-		try {
-			message.deleteMessage();
-		} catch(PermissionException e) {
-			BaseBot.print("Nao foi possível apagar uma mensagem!", "PermissionException");
-		}
-		
-		if (bot.getConfigStringValue("youtubeAPIkey") != null) {
+		if (bot.getConfigStringValue("youtubeAPIkey") != null || bot.getConfigStringValue("youtubeAPIkey") != "") {
 			if (params.length >= 1 && BaseBot.checkLink(params[0])) {
 				String completeName = "";
 				if (params.length > 1) {
@@ -71,11 +65,23 @@ public class Play extends Command{
 					
 					SearchListResponse searchResponse = search.execute();
 					
-					BaseBot.print(searchResponse.getItems().get(0).getId().getVideoId(), "Debug");
+					if (searchResponse.getItems().isEmpty()) {
+						reply = author.getAsMention() + ", não encontrei nenhum vídeo!";
+						bot.deletableMessage(reply, channel);
+						return;
+					}
+					
+					BaseBot.print("Musica pedida atraves da API do YouTube. VideoID: " + searchResponse.getItems().get(0).getId().getVideoId(), "Debug");
 					
 					params[0] = searchResponse.getItems().get(0).getId().getVideoId();
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			} else {
+				try {
+					message.deleteMessage();
+				} catch(PermissionException e) {
+					BaseBot.print("Nao foi possível apagar uma mensagem!", "PermissionException");
 				}
 			}
 		}
@@ -85,11 +91,13 @@ public class Play extends Command{
 				if(jda.getVoiceChannelById(bot.getConfigStringValue("voiceChannelID")) != null) {
 					am.openAudioConnection(jda.getVoiceChannelById(bot.getConfigStringValue("voiceChannelID")));
 				} else {
-					channel.sendMessage(author.getAsMention() + ", não consegui me conectar a um canal de voz!");
+					reply = author.getAsMention() + ", não consegui me conectar a um canal de voz!";
+					bot.deletableMessage(reply, channel);
 					return;
 				}
 			} else {
-				channel.sendMessage(author.getAsMention() + ", não estou em um canal de voz!");
+				reply = author.getAsMention() + ", não estou em um canal de voz!";
+				bot.deletableMessage(reply, channel);
 				return;
 			}
 		}
@@ -133,7 +141,6 @@ public class Play extends Command{
 
 				if (!musicPlayer.isPlaying()) {
 					musicPlayer.play();
-					jda.getAccountManager().setGame(audioInfo.getTitle());
 				} else {
 					String err = audioInfo.getError();
 					if (err != null) {
@@ -148,7 +155,7 @@ public class Play extends Command{
 			}
 		}
 
-		channel.sendMessage(reply);
+		bot.deletableMessage(reply, channel);
 		return;
 	}
 	
@@ -161,7 +168,11 @@ public class Play extends Command{
 	}
 	
 	public String getParams() {
-		return "<youtube link>";
+		return "<link ou título do vídeo>";
+	}
+	
+	public String[] getAliases() {
+		return new String[]{"tocar"};
 	}
 	
 	public String[] getAuths() {
@@ -169,7 +180,7 @@ public class Play extends Command{
 	}
 	
 	public boolean verifyParameters(String[] params) {
-		return true;
+		return (params.length >= 1);
 	}
 	
 }

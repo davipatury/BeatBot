@@ -29,19 +29,19 @@ public class Volume extends Command{
 				volume = Float.max(volume, 0);
 				
 				try {
+					reply = message.getAuthor().getAsMention() + ", volume definido de " + Math.round(musicPlayer.getVolume() * 100) + " para " + Math.round(volume);
 					musicPlayer.setVolume(volume/100);
-					reply = message.getAuthor().getAsMention() + ", volume definido para: " + volume;
 				} catch (NumberFormatException e) {
 					reply = message.getAuthor().getAsMention() + ", não foi possível definir o volume, defina um número correto.";
 				}
 			} else {
-				reply = message.getAuthor().getAsMention() + ", o volume atual é: " + (musicPlayer.getVolume() * 100);
+				reply = message.getAuthor().getAsMention() + ", o volume atual é: " + Math.round(musicPlayer.getVolume() * 100);
 			}
 		} else {
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
 		}
 		
-		channel.sendMessage(reply);
+		bot.deletableMessage(reply, channel);
 		return;
 	}
 	
@@ -55,6 +55,10 @@ public class Volume extends Command{
 	
 	public String getParams() {
 		return "[<volume>]";
+	}
+	
+	public String[] getAliases() {
+		return new String[]{"vol"};
 	}
 	
 	public String[] getAuths() {
