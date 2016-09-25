@@ -18,7 +18,7 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 - `musicTextChannelID: 123` - Substitua `123` pelo ID do chat de texto que você deseja que o bot envie as mensagens.
 - `autoSummon: true` - Coloque `true` para que antes do bot reproduzir uma música, ele automaticamente entre no chat de voz. Ou coloque `false` para que não seja possível reproduzir músicas até que o bot esteja em um chat de voz.
 
-## Como adquirir os IDs dos canais de voz e de texto
+### Como adquirir os IDs dos canais de voz e de texto
 - Abra seu Discord, vá até Configurações(Engrenagem no canto inferior esquerdo)->Aparência->Ative 'Modo de desenvolvedor'
 - Vá na Guilda(Grupo) que o seu bot está, clique com o botão direito no chat de voz / chat de texto que você deseja e clique em Copiar ID.
 
