@@ -46,7 +46,7 @@ public class Play extends Command{
 		}
 		
 		if (bot.getConfigStringValue("youtubeAPIkey") != null) {
-			if (params.length >= 1 && (!params[0].startsWith("youtube.com") || !params[0].startsWith("http://") || !params[0].startsWith("www."))) {
+			if (params.length >= 1 && BaseBot.checkLink(params[0])) {
 				String completeName = "";
 				if (params.length > 1) {
 					for(String s : params) {

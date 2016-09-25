@@ -23,15 +23,19 @@ public class Volume extends Command{
 		MusicPlayer musicPlayer;
 		if (am.getSendingHandler() != null) {
 			musicPlayer = (MusicPlayer) am.getSendingHandler();
-			float volume = Float.parseFloat(params[0]);
-			volume = Float.min(volume, 100);
-			volume = Float.max(volume, 0);
-			
-			try {
-				musicPlayer.setVolume(volume/100);
-				reply = message.getAuthor().getAsMention() + ", volume definido para: " + volume;
-			} catch (NumberFormatException e) {
-				reply = message.getAuthor().getAsMention() + ", não foi possível definir o volume, defina um número correto.";
+			if (params != null && params.length > 0) {
+				float volume = Float.parseFloat(params[0]);
+				volume = Float.min(volume, 100);
+				volume = Float.max(volume, 0);
+				
+				try {
+					musicPlayer.setVolume(volume/100);
+					reply = message.getAuthor().getAsMention() + ", volume definido para: " + volume;
+				} catch (NumberFormatException e) {
+					reply = message.getAuthor().getAsMention() + ", não foi possível definir o volume, defina um número correto.";
+				}
+			} else {
+				reply = message.getAuthor().getAsMention() + ", o volume atual é: " + (musicPlayer.getVolume() * 100);
 			}
 		} else {
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
@@ -50,7 +54,7 @@ public class Volume extends Command{
 	}
 	
 	public String getParams() {
-		return "<volume>";
+		return "[<volume>]";
 	}
 	
 	public String[] getAuths() {
@@ -58,7 +62,7 @@ public class Volume extends Command{
 	}
 	
 	public boolean verifyParameters(String[] params) {
-		return (params.length == 1);
+		return true;
 	}
 	
 }

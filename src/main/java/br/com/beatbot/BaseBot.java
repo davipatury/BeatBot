@@ -72,6 +72,25 @@ public class BaseBot extends ListenerAdapter{
 	    System.out.println("[" + strDate + "] [" + tag + "] [BeatBot]: " + message);
 	}
 	
+	public static boolean checkLink(String string) {
+		if(string.startsWith("youtube.com")) {
+			return false;
+		}
+		if(string.startsWith("http://")) {
+			return false;
+		}
+		if(string.startsWith("https://")) {
+			return false;
+		}
+		if(string.startsWith("www.")) {
+			return false;
+		}
+		if(string.startsWith("soundcloud.com")) {
+			return false;
+		}
+		return true;
+	}
+	
 	public static MusicPlayer createPlayer(AudioManager am) {
 		MusicPlayer myPlayer = new MusicPlayer() {
 			@Override
