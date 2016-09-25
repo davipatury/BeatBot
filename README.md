@@ -29,6 +29,9 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 - `!queue` - Mostra a playlist atual
 - `!volume <0-100>` - Define o volume da música
 
+### TODO
+- Não faço ideia
+
 ### Third party libraries usadas
 | Nome | Versão |
 |------|---------|
