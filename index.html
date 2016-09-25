@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Beatbot by davipatury</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Beatbot</h1>
+          <h2>A JDA music bot made.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/davipatury/BeatBot/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/davipatury/BeatBot/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/davipatury/BeatBot" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="beatbot-" class="anchor" href="#beatbot-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BeatBot <a href="https://travis-ci.org/davipatury/BeatBot"><img src="https://travis-ci.org/davipatury/BeatBot.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>BeatBot é um bot de música para <a href="http://www.discordapp.com">Discord</a>. Ele pode tocar músicas locais ou de sites como Youtube e Soundcloud.</p>
+
+<h3>
+<a id="requisitos" class="anchor" href="#requisitos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requisitos</h3>
+
+<ul>
+<li>Java 8</li>
+<li>Todos os complementos contidos na release (exceto a source do projeto)</li>
+</ul>
+
+<h3>
+<a id="instalação" class="anchor" href="#instala%C3%A7%C3%A3o" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Instalação</h3>
+
+<ul>
+<li>
+<a href="https://github.com/davipatury/BeatBot/releases">Baixe</a> o jar e seus complementos</li>
+<li>Transfira para o seu server ou use ele no seu computador</li>
+<li>Use este comando para rodá-lo <code>java -jar BeatBot.jar</code> e espere o bot gerar o arquivo <code>config.yml</code>
+</li>
+<li>Desligue o bot e configure-o através do arquivo <code>config.yml</code>
+</li>
+<li>Depois de configurá-lo, use este comando para rodá-lo <code>java -jar BeatBot.jar</code>
+</li>
+</ul>
+
+<h3>
+<a id="configuração" class="anchor" href="#configura%C3%A7%C3%A3o" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuração</h3>
+
+<ul>
+<li>
+<code>youtubeAPIkey: 123</code> - API Key da API do Youtube, deixe em branco caso não queira usar o sistema de busca. (!play (título do vídeo))</li>
+<li>
+<code>token: tokenHere</code> - Substitua <code>tokenHere</code> pelo token do seu bot, saiba mais sobre tokens <a href="https://discordapp.com/developers/docs/topics/oauth2">aqui</a>.</li>
+<li>
+<code>prefix: !</code> - Substitua(ou não) <code>!</code> pelo prefixo dos comandos que você deseja.</li>
+<li>
+<code>voiceChannelID: 123</code> - Substitua <code>123</code> pelo ID do chat de voz que você deseja que o bot reproduza as músicas.</li>
+<li>
+<code>musicTextChannelID: 123</code> - Substitua <code>123</code> pelo ID do chat de texto que você deseja que o bot envie as mensagens.</li>
+<li>
+<code>autoSummon: true</code> - Coloque <code>true</code> para que antes do bot reproduzir uma música, ele automaticamente entre no chat de voz. Ou coloque <code>false</code> para que não seja possível reproduzir músicas até que o bot esteja em um chat de voz.</li>
+</ul>
+
+<h3>
+<a id="como-adquirir-os-ids-dos-canais-de-voz-e-de-texto" class="anchor" href="#como-adquirir-os-ids-dos-canais-de-voz-e-de-texto" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Como adquirir os IDs dos canais de voz e de texto</h3>
+
+<ul>
+<li>Abra seu Discord, vá até Configurações(Engrenagem no canto inferior esquerdo)-&gt;Aparência-&gt;Ative 'Modo de desenvolvedor'</li>
+<li>Vá na Guilda(Grupo) que o seu bot está, clique com o botão direito no chat de voz / chat de texto que você deseja e clique em Copiar ID.</li>
+</ul>
+
+<h3>
+<a id="uso" class="anchor" href="#uso" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Uso</h3>
+
+<ul>
+<li>
+<code>!help</code> - Mostra todos os comandos, você pode usar !help [nome do comando] para mais informações.</li>
+<li>
+<code>!play &lt;url ou nome do vídeo do youtube&gt;</code> - Adiciona um vídeo do Youtube / Soundcloud à playlist</li>
+<li>
+<code>!skip</code> - Pula para a próxima música na playlist</li>
+<li>
+<code>!queue</code> - Mostra a playlist atual</li>
+<li>
+<code>!volume &lt;0-100&gt;</code> - Define o volume da música</li>
+</ul>
+
+<h3>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TODO</h3>
+
+<ul>
+<li>Não faço ideia</li>
+</ul>
+
+<h3>
+<a id="third-party-libraries-usadas" class="anchor" href="#third-party-libraries-usadas" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Third party libraries usadas</h3>
+
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Versão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/DV8FromTheWorld/JDA">JDA</a></td>
+<td>2.2.1_353</td>
+</tr>
+<tr>
+<td><a href="https://github.com/DV8FromTheWorld/JDA-Player">JDAPlayer</a></td>
+<td>SNAPSHOT</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="licença" class="anchor" href="#licen%C3%A7a" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Licença</h3>
+
+<p>Este projeto é licenciado sobre o GNU General Public License v3.0. Veja o arquivo LICENSE para mais detalhes.</p>
+        </section>
+
+        <footer>
+          Beatbot is maintained by <a href="https://github.com/davipatury">davipatury</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
