@@ -20,9 +20,10 @@ BeatBot é um bot de música para [Discord](http://www.discordapp.com). Ele pode
 
 ### Uso
 - `!help` - Mostra todos os comandos, você pode usar !help [nome do comando] para mais informações.
-- `!play <url>` - Adiciona um vídeo do Youtube / Soundcloud à playlist
+- `!play <url ou nome do vídeo>` - Adiciona um vídeo do Youtube / Soundcloud à playlist
 - `!skip` - Pula para a próxima música na playlist
 - `!queue` - Mostra a playlist atual
+- `!volume <0-100>` - Define o volume da música
 
 ### Third party libraries usadas
 | Nome | Versão |
