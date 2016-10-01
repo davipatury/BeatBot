@@ -4,6 +4,7 @@ import java.util.StringJoiner;
 import java.util.TreeSet;
 
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
 
@@ -34,7 +35,6 @@ public class Help extends Command{
 				for (Command command : bot.getCommands().values()) {
 					for (String aliase : command.getAliases()) {
 						if (aliase.equalsIgnoreCase(params[0])) {
-							BaseBot.print(aliase + " = " + command.getName(), "Debug");
 							reply = String.format("%s: \n", command.getName());
 							reply += String.format("Uso: `%s%s %s`\n", bot.getConfigStringValue("prefix"), command.getName(), command.getParams());
 							reply += String.format("Descrição: %s\n", command.getDescription());
@@ -78,7 +78,7 @@ public class Help extends Command{
 			reply += "\n\nSaiba mais sobre os comandos em: https://github.com/davipatury/BeatBot/wiki/Commands";
 		}
 
-		bot.deletableMessage(reply, channel, 30);
+		Utils.deletableMessage(reply, channel, 30);
 		return;
 	}
 	
@@ -104,6 +104,10 @@ public class Help extends Command{
 	
 	public boolean verifyParameters(String[] params) {
 		return true;
+	}
+	
+	public boolean onlyGuild() {
+		return false;
 	}
 	
 }

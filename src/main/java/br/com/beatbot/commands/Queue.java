@@ -1,6 +1,7 @@
 package br.com.beatbot.commands;
 
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
@@ -28,7 +29,7 @@ public class Queue extends Command{
 			
 			if (musicPlayer.getCurrentAudioSource() == null) {
 				reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
-				bot.deletableMessage(reply, channel);
+				Utils.deletableMessage(reply, channel);
 				return;
 			}
 			
@@ -43,11 +44,11 @@ public class Queue extends Command{
 			
 			minutes = musicPlayer.getCurrentTimestamp().getMinutes();
 			seconds = musicPlayer.getCurrentTimestamp().getSeconds();
-			currentTime = BaseBot.formatMusicTime(minutes) + ":" + BaseBot.formatMusicTime(seconds);
+			currentTime = Utils.formatMusicTime(minutes) + ":" + Utils.formatMusicTime(seconds);
 			
 			minutes = currentInfo.getDuration().getMinutes();
 			seconds = currentInfo.getDuration().getSeconds();
-			audioSourceTime = BaseBot.formatMusicTime(minutes) + ":" + BaseBot.formatMusicTime(seconds);
+			audioSourceTime = Utils.formatMusicTime(minutes) + ":" + Utils.formatMusicTime(seconds);
 			
 			reply = "Está tocando: **" + currentInfo.getTitle() 
 					+ "** `[" + currentTime
@@ -65,7 +66,7 @@ public class Queue extends Command{
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
 		}
 		
-		bot.deletableMessage(reply, channel);
+		Utils.deletableMessage(reply, channel);
 		return;
 	}
 	

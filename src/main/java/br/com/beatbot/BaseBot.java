@@ -1,31 +1,19 @@
 package br.com.beatbot;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.security.auth.login.LoginException;
-import javax.swing.Timer;
+import java.util.Map.Entry;
 
 import br.com.beatbot.commands.*;
 import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
-import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.player.MusicPlayer;
 import net.dv8tion.jda.player.source.AudioSource;
 
-public class BaseBot extends ListenerAdapter{
+public class BaseBot{
 	
 	public static Configuration config;
 	public static JDA jda;
@@ -33,46 +21,14 @@ public class BaseBot extends ListenerAdapter{
 	
 	public static Map<String, Command> commands = new HashMap<String, Command>();
 	public static Map<AudioSource, User> authors = new HashMap<AudioSource, User>();
+	public static Map<MusicPlayer, Guild> musicPlayers = new HashMap<MusicPlayer, Guild>();
 	
-	public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, FileNotFoundException, UnsupportedEncodingException
-	{
-		
-		try {
-			config = new Configuration("config.yml");
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			createConfig();
-			config = new Configuration("config.yml");
-		}
-		
-		jda = new JDABuilder().setBotToken(config.getString("token")).buildBlocking();
-		jda.addEventListener(new BaseBot());
-		
-        loadCommmands();
-        
-        print("Bot setup complete.", "Setup");
-    }
-	
-	public static void createConfig() throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer;
-		writer = new PrintWriter("config.yml", "UTF-8");
-		
-		writer.println("youtubeAPIkey: '123' # API Key do Youtube, deixe em branco caso não queira usar o sistema de busca. (!play <título do vídeo>)");
-		
-		writer.println("token: 'tokenHere' # Substitua `tokenHere` pelo token do seu bot.");
-		
-		writer.println("prefix: '!' # Substitua(ou não) `!` pelo prefixo dos comandos que você deseja.");
-		
-		writer.println("voiceChannelID: '123' #  Substitua `123` pelo ID do chat de voz que você deseja que o bot reproduza as músicas.");
-		
-		writer.println("musicTextChannelID: '123' # Substitua `123` pelo ID do chat de texto que você deseja que o bot envie as mensagens.");
-		
-		writer.println("autoSummon: true #  Coloque `true` para que antes do bot reproduzir uma música, ele automaticamente entre no chat de voz. "
-				+ "Ou coloque `false` para que não seja possível reproduzir músicas até que o bot esteja em um chat de voz.");
-		
-		writer.close();
+	public BaseBot(Configuration c, JDA j) {
+		jda = j;
+		config = c;
 	}
 	
-	public static void loadCommmands() {
+	public void loadCommmands() {
 		commands.put("help", new Help());
 		commands.put("play", new Play());
 		commands.put("queue", new Queue());
@@ -80,12 +36,19 @@ public class BaseBot extends ListenerAdapter{
 		commands.put("volume", new Volume());
 		commands.put("stop", new Stop());
 		commands.put("info", new Info());
+		commands.put("ping", new Ping());
+		if (config.getBoolean("debug")) {
+			commands.put("pingserver", new PingServer());
+		}
+		commands.put("configurate", new Configurate());
 		for(String name : commands.keySet()) {
-			print("Comando adicionado: " + name, "Setup");
+			Utils.print("Comando adicionado: " + name, "Setup");
 		}
 	}
 	
-	// Static...
+	/* Get and Set */
+	
+	// Volume
 	public float getVolume() {
 		return volumeAtual;
 	}
@@ -94,6 +57,26 @@ public class BaseBot extends ListenerAdapter{
 		volumeAtual = volume;
 	}
 	
+	// MusicPlayer and Guilds
+	public void setMusicPlayers(Map<MusicPlayer, Guild> set) {
+		musicPlayers = set;
+	}
+	
+	public Guild getGuildByPlayer(MusicPlayer musicPlayer) {
+		return musicPlayers.get(musicPlayer);
+	}
+	
+	public MusicPlayer getPlayerByGuild(Guild guild) {
+		if (musicPlayers.containsValue(guild)) {
+			for (Entry<MusicPlayer, Guild> e : musicPlayers.entrySet()) {
+				if (e.getValue() == guild) {
+					return e.getKey();
+				}
+			}
+		}
+		return null;
+	}
+	// Authors
 	public Map<AudioSource, User> getAuthors() {
 		return authors;
 	}
@@ -102,10 +85,20 @@ public class BaseBot extends ListenerAdapter{
 		authors.put(as, author);
 	}
 	
+	public void clearAuthors() {
+		authors.clear();
+	}
+	
+	public void removeAuthor(AudioSource as) {
+		authors.remove(as);
+	}
+	
+	// Commands
 	public Map<String, Command> getCommands() {
 		return commands;
 	}
 	
+	// Config
 	public String getConfigStringValue(String key) {
 		return config.getString(key);
 	}
@@ -117,125 +110,36 @@ public class BaseBot extends ListenerAdapter{
 	public boolean getConfigBooleanValue(String key) {
 		return config.getBoolean(key);
 	}
+
+	public void setConfig(Configuration c) {
+		config = c;
+	}
 	
+	// JDA
 	public JDA getJDA() {
 		return jda;
 	}
-	//
 	
-	public static void print(String message, String tag) {
-		if (tag == "Debug" && config.getString("debug") == null) {
-			return;
-		}
-		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
-		Date now = new Date();
-	    String strDate = sdfDate.format(now);
-	    System.out.println("[" + strDate + "] [" + tag + "] [BeatBot]: " + message);
+	public void setJDA(JDA j) {
+		jda = j;
 	}
 	
-	public static String formatMusicTime(int time) {
-		String string;
-		if(time < 10) {
-			string = "0" + time;
+	public void sendMusicMessage(String message, Guild g) {
+		GuildData gd = new GuildData(g);
+		TextChannel channel;
+		
+		if (gd.file) {
+			channel = jda.getTextChannelById(gd.getString("musicTextChannelID"));
+			if (channel == null) {
+				channel = jda.getTextChannelById(config.getString("reportErrorsID"));
+				message = "O bot na guilda de ID `" + g.getId() + "` não tem o TextChannel de música configurado corretamente. Textchannel configurado: `" + gd.getString("musicTextChannelID") + "`";
+			}
 		} else {
-			string = String.valueOf(time);
+			channel = jda.getTextChannelById(config.getString("reportErrorsID"));
+			message = "O bot na guilda de ID `" + g.getId() + "` não tem o TextChannel de música configurado.";
 		}
-		return string;
-	}
-	
-	public static boolean checkLink(String string) {
-		if(string.startsWith("youtube.com")) {
-			return false;
-		}
-		if(string.startsWith("http://")) {
-			return false;
-		}
-		if(string.startsWith("https://")) {
-			return false;
-		}
-		if(string.startsWith("www.")) {
-			return false;
-		}
-		if(string.startsWith("soundcloud.com")) {
-			return false;
-		}
-		return true;
-	}
-	
-	public static MusicPlayer createPlayer(AudioManager am) {
-		MusicPlayer myPlayer = new MusicPlayer() {
-			@Override
-			public void stop() {
-				super.stop();
-				am.closeAudioConnection();
-				jda.getAccountManager().setGame("Paciência Spider");
-				authors.clear();
-			}
-
-			@Override
-			public void playNext(boolean b) {
-				super.playNext(b);
-				super.setVolume(volumeAtual);
-				
-				authors.remove(super.getPreviousAudioSource());
-
-				AudioSource src = super.getCurrentAudioSource();
-				if (src == null) {
-					am.closeAudioConnection();
-					jda.getAccountManager().setGame("Paciência Spider");
-					authors.clear();
-				} else {
-					sendMusicMessage("Tocando agora: **" + src.getInfo().getTitle() + "**");
-					jda.getAccountManager().setGame(src.getInfo().getTitle());
-				}
-			}
-
-			@Override
-            public void play() {
-				super.play();
-				super.setVolume(volumeAtual);
-				jda.getAccountManager().setGame(super.getCurrentAudioSource().getInfo().getTitle());
-			}
-		};
-		myPlayer.setVolume(volumeAtual);
-		return myPlayer;
-    }
-	
-	public static void sendMusicMessage(String message) {
-		TextChannel channel = jda.getTextChannelById(config.getString("musicTextChannelID"));
-		Message ms = channel.sendMessage(message);
-		Timer timer = new Timer(15000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ms.deleteMessage();
-			}
-		});
-		timer.setRepeats(false);
-		timer.start();
-	}
-	
-	public void deletableMessage(String message, TextChannel channel) {
-		Message ms = channel.sendMessage(message);
-		Timer timer = new Timer(15000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ms.deleteMessage();
-			}
-		});
-		timer.setRepeats(false);
-		timer.start();
-	}
-	
-	public void deletableMessage(String message, TextChannel channel, int time) {
-		Message ms = channel.sendMessage(message);
-		Timer timer = new Timer(time * 1000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ms.deleteMessage();
-			}
-		});
-		timer.setRepeats(false);
-		timer.start();
+		
+		Utils.deletableMessage(message, channel, 30);
 	}
 	
 	public void checkCommand(String[] words, Message message) {
@@ -258,33 +162,11 @@ public class BaseBot extends ListenerAdapter{
 			return;
 		}
 		
-		command.doCommand(this, message, params);
-	}
-	
-	@Override
-	public void onMessageReceived(MessageReceivedEvent event)
-	{
-		Message message = event.getMessage();
-		if (!message.getContent().startsWith(config.getString("prefix")) || message.getContent().length() < 1) {
+		if(command.onlyGuild() && message.isPrivate()) {
+			message.getChannel().sendMessage(String.format("%s, comando falhou ao executar: esse comando não pode ser usado em chats privados.", message.getAuthor().getAsMention()));
 			return;
 		}
 		
-		String[] words = message.getContent().substring(config.getString("prefix").length()).split("\\s");
-		String sCommand = words[0].toLowerCase();
-		
-		if (commands.containsKey(sCommand)) {
-			checkCommand(words, message);
-		} else {
-			for (Command c : commands.values()) {
-				for (String aliase : c.getAliases()) {
-					if (aliase.equalsIgnoreCase(sCommand)) {
-						BaseBot.print(sCommand + " = " + aliase.toLowerCase(), "Debug");
-						words[0] = c.getName();
-						checkCommand(words, message);
-						return;
-					}
-				}
-			}
-		}
+		command.doCommand(this, message, params);
 	}
 }

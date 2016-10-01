@@ -1,10 +1,7 @@
 package br.com.beatbot.commands;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
@@ -32,7 +29,7 @@ public class Info extends Command{
 			
 			if(!musicPlayer.isPlaying() || musicPlayer.getCurrentAudioSource() == null) {
 				reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
-				bot.deletableMessage(reply, channel, 30);
+				Utils.deletableMessage(reply, channel, 30);
 				return;
 			}
 			
@@ -46,11 +43,11 @@ public class Info extends Command{
 			
 			minutes = musicPlayer.getCurrentTimestamp().getMinutes();
 			seconds = musicPlayer.getCurrentTimestamp().getSeconds();
-			currentTime = BaseBot.formatMusicTime(minutes) + ":" + BaseBot.formatMusicTime(seconds);
+			currentTime = Utils.formatMusicTime(minutes) + ":" + Utils.formatMusicTime(seconds);
 			
 			minutes = audioInfo.getDuration().getMinutes();
 			seconds = audioInfo.getDuration().getSeconds();
-			audioSourceTime = BaseBot.formatMusicTime(minutes) + ":" + BaseBot.formatMusicTime(seconds);
+			audioSourceTime = Utils.formatMusicTime(minutes) + ":" + Utils.formatMusicTime(seconds);
 			
 			reply = "Está tocando: **" + musicPlayer.getCurrentAudioSource().getInfo().getTitle() 
 					+ "** `[" + currentTime
@@ -60,27 +57,13 @@ public class Info extends Command{
 				reply += "\nPedido por: " + bot.getAuthors().get(audioSource).getUsername() + "#" + bot.getAuthors().get(audioSource).getDiscriminator();
 			}
 			
-			if (audioInfo.getJsonInfo().has("extractor")) {
-				reply += "\nExtraído através do: " + audioInfo.getJsonInfo().get("extractor");
-			}
-			
-			if (audioInfo.getJsonInfo().has("id")) {
-				reply += "\nID: " + audioInfo.getJsonInfo().get("id");
-			}
+			reply += "\nExtraído através do: " + audioInfo.getExtractor();
+			reply += "\nID: " + audioInfo.getId();
 			
 			if (audioInfo.getJsonInfo().has("like_count")) {
 				reply += "\nLikes: " + audioInfo.getJsonInfo().get("like_count");
 			}
-			
-			try {
-				PrintWriter writer;
-				writer = new PrintWriter("json.txt", "UTF-8");
-				audioInfo.getJsonInfo().write(writer);
-				writer.close();
-			} catch (FileNotFoundException | UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			
+				
 			if (audioInfo.getThumbnail() != null) {
 				reply += "\nThumbnail: " + audioInfo.getThumbnail();
 			}
@@ -90,7 +73,7 @@ public class Info extends Command{
 		}
 		
 		if (reply != null) {
-			bot.deletableMessage(reply, channel, 30);
+			Utils.deletableMessage(reply, channel, 30);
 		}
 		return;
 	}

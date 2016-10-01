@@ -4,19 +4,30 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
-public class Configuration {
+import net.dv8tion.jda.entities.Guild;
+
+public class GuildData {
 	
 	public Yaml yaml = new Yaml();
 	public Map<?, ?> data;
+	public Guild guild;
 	
-	public Configuration(String filepath) throws FileNotFoundException, UnsupportedEncodingException {
-		InputStream input = new FileInputStream(new File(filepath));
-		this.data = (Map<?, ?>) yaml.load(input);
+	public boolean file;
+	
+	public GuildData(Guild g) {
+		guild = g;
+		
+		try {
+			InputStream input = new FileInputStream(new File("data/" + guild.getId() + ".yml"));
+			this.data = (Map<?, ?>) yaml.load(input);
+			file = true;
+		} catch (FileNotFoundException e) {
+			file = false;
+		}
 	}
 	
 	//Get

@@ -1,6 +1,7 @@
 package br.com.beatbot.commands;
 
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
@@ -33,7 +34,7 @@ public class Stop extends Command{
 		}
 		
 		if (reply != null) {
-			bot.deletableMessage(reply, channel);
+			Utils.deletableMessage(reply, channel);
 		}
 		return;
 	}

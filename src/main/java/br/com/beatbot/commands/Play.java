@@ -10,6 +10,8 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.GuildData;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
@@ -40,7 +42,7 @@ public class Play extends Command{
 		channel.sendTyping();
 		
 		if (bot.getConfigStringValue("youtubeAPIkey") != null || bot.getConfigStringValue("youtubeAPIkey") != "") {
-			if (params.length >= 1 && BaseBot.checkLink(params[0])) {
+			if (params.length >= 1 && Utils.checkLink(params[0])) {
 				String completeName = "";
 				if (params.length > 1) {
 					for(String s : params) {
@@ -67,11 +69,13 @@ public class Play extends Command{
 					
 					if (searchResponse.getItems().isEmpty()) {
 						reply = author.getAsMention() + ", não encontrei nenhum vídeo!";
-						bot.deletableMessage(reply, channel);
+						Utils.deletableMessage(reply, channel);
 						return;
 					}
 					
-					BaseBot.print("Musica pedida atraves da API do YouTube. VideoID: " + searchResponse.getItems().get(0).getId().getVideoId(), "Debug");
+					if (bot.getConfigBooleanValue("debug")) {
+						Utils.debugPrint("Pedido de musica feito atraves da API do YouTube. VideoID: " + searchResponse.getItems().get(0).getId().getVideoId());
+					}
 					
 					params[0] = searchResponse.getItems().get(0).getId().getVideoId();
 				} catch (IOException e) {
@@ -81,30 +85,38 @@ public class Play extends Command{
 				try {
 					message.deleteMessage();
 				} catch(PermissionException e) {
-					BaseBot.print("Nao foi possível apagar uma mensagem!", "PermissionException");
+					Utils.print("Erro ao deletar mensagem!", "PermissionException");
 				}
 			}
 		}
 		
 		if (!am.isConnected()) {
 			if (bot.getConfigBooleanValue("autoSummon")) {
-				if(jda.getVoiceChannelById(bot.getConfigStringValue("voiceChannelID")) != null) {
-					am.openAudioConnection(jda.getVoiceChannelById(bot.getConfigStringValue("voiceChannelID")));
+				GuildData gd = new GuildData(guild);
+				
+				if (gd.file) {
+					if(jda.getVoiceChannelById(gd.getString("voiceChannelID")) != null) {
+						am.openAudioConnection(jda.getVoiceChannelById(gd.getString("voiceChannelID")));
+					} else {
+						reply = author.getAsMention() + ", não consegui me conectar a um canal de voz!";
+						Utils.deletableMessage(reply, channel);
+						return;
+					}
 				} else {
-					reply = author.getAsMention() + ", não consegui me conectar a um canal de voz!";
-					bot.deletableMessage(reply, channel);
+					reply = "O bot precisa estar configurado para isto!";
+					channel.sendMessage(reply);
 					return;
 				}
 			} else {
 				reply = author.getAsMention() + ", não estou em um canal de voz!";
-				bot.deletableMessage(reply, channel);
+				Utils.deletableMessage(reply, channel);
 				return;
 			}
 		}
 		
 		MusicPlayer musicPlayer;
 		if (am.getSendingHandler() == null) {
-			musicPlayer = BaseBot.createPlayer(am);
+			musicPlayer = bot.getPlayerByGuild(guild);
 			am.setSendingHandler(musicPlayer);
 		} else {
 			musicPlayer = (MusicPlayer) am.getSendingHandler();
@@ -124,39 +136,27 @@ public class Play extends Command{
 		} else if (audioInfo.isLive()) {
 			reply = author.getAsMention() + ", não é possível tocar livestreams! Desculpe pela incoveniência.";
 		} else {
-			if (audioInfo.getError() == null) {
-				
-				if(musicPlayer.getAudioQueue().size() == 0 && !musicPlayer.isPlaying()) {
-					reply = String.format("**%s** foi adicionada à lista de reprodução!\n=> Pedido feito por %s", 
-							audioInfo.getTitle(), 
-							author.getAsMention().replace("`", "\\`"));
-				} else {
-					reply = String.format("**%s** foi adicionada à lista de reprodução!\n=> Pedido feito por %s - Posição: [%s]", 
-							audioInfo.getTitle(), 
-							author.getAsMention().replace("`", "\\`"), 
-							String.valueOf(musicPlayer.getAudioQueue().size()));
-				}
-				
-				musicPlayer.getAudioQueue().add(audioSource);
-				bot.addAuthors(audioSource, author);
+			
+			if(musicPlayer.getAudioQueue().size() == 0 && !musicPlayer.isPlaying()) {
+				reply = String.format("**%s** foi adicionada à lista de reprodução!\n=> Pedido feito por %s", 
+						audioInfo.getTitle(), 
+						author.getAsMention().replace("`", "\\`"));
+			} else {
+				reply = String.format("**%s** foi adicionada à lista de reprodução!\n=> Pedido feito por %s - Posição: [%s]", 
+						audioInfo.getTitle(), 
+						author.getAsMention().replace("`", "\\`"), 
+						String.valueOf(musicPlayer.getAudioQueue().size()));
+			}
+			
+			musicPlayer.getAudioQueue().add(audioSource);
+			bot.addAuthors(audioSource, author);
 
-				if (!musicPlayer.isPlaying()) {
-					musicPlayer.play();
-				} else {
-					String err = audioInfo.getError();
-					if (err != null) {
-						if (err.length() > 1900) {
-							reply = author.getAsMention() + ", um erro inesperado ocorreu!";
-							System.err.println(err);
-						} else {
-							reply = "```" + err + "```";
-						}
-					}
-				}
+			if (!musicPlayer.isPlaying()) {
+				musicPlayer.play();
 			}
 		}
 
-		bot.deletableMessage(reply, channel);
+		Utils.deletableMessage(reply, channel);
 		return;
 	}
 	

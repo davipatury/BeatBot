@@ -1,6 +1,7 @@
 package br.com.beatbot.commands;
 
 import br.com.beatbot.BaseBot;
+import br.com.beatbot.Utils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
@@ -42,7 +43,7 @@ public class Volume extends Command{
 			reply = message.getAuthor().getAsMention() + ", não estou tocando nada no momento!";
 		}
 		
-		bot.deletableMessage(reply, channel);
+		Utils.deletableMessage(reply, channel);
 		return;
 	}
 	
